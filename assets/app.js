@@ -313,6 +313,17 @@ function shouldTintNavigation(scrollY) {
   return scrollY > 20;
 }
 
+function getSectionMetrics(sections) {
+  if (!Array.isArray(sections) || typeof window === 'undefined') {
+    return [];
+  }
+
+  return sections.map((section) => ({
+    id: section.dataset.section,
+    top: section.getBoundingClientRect().top + window.scrollY,
+  }));
+}
+
 function getActiveSectionId(sectionMetrics, options = {}) {
   if (!Array.isArray(sectionMetrics) || sectionMetrics.length === 0) {
     return null;
@@ -344,10 +355,16 @@ function getActiveSectionId(sectionMetrics, options = {}) {
   return activeSectionId;
 }
 
-function setActiveNavigationChip(sectionId) {
+function setActiveNavigationChip(sectionId, options = {}) {
   if (typeof document === 'undefined') {
     return;
   }
+
+  const {
+    shouldScrollIntoView = true,
+    scrollBehavior = 'smooth',
+  } = options;
+
   const chips = document.querySelectorAll('[data-nav-chip]');
   for (const chip of chips) {
     const isActive = chip.dataset.navChip === sectionId;
@@ -357,9 +374,14 @@ function setActiveNavigationChip(sectionId) {
 
     chip.classList.toggle('is-active', isActive);
 
-    if (isActive && !wasActive && typeof chip.scrollIntoView === 'function') {
+    if (
+      shouldScrollIntoView
+      && isActive
+      && !wasActive
+      && typeof chip.scrollIntoView === 'function'
+    ) {
       chip.scrollIntoView({
-        behavior: 'smooth',
+        behavior: scrollBehavior,
         block: 'nearest',
         inline: 'center',
       });
@@ -374,25 +396,44 @@ function syncTopbarTint(topbar) {
   topbar.classList.toggle('is-tinted', shouldTintNavigation(window.scrollY));
 }
 
-function syncActiveSectionByScroll() {
+function syncActiveSectionByScroll(sectionMetrics, options = {}) {
   if (typeof document === 'undefined' || typeof window === 'undefined') {
     return;
   }
 
-  const sectionMetrics = Array.from(document.querySelectorAll('.department-lane')).map((section) => ({
-    id: section.dataset.section,
-    top: section.getBoundingClientRect().top + window.scrollY,
-  }));
+  const resolvedSectionMetrics = Array.isArray(sectionMetrics)
+    ? sectionMetrics
+    : getSectionMetrics(Array.from(document.querySelectorAll('.department-lane')));
 
-  const activeSectionId = getActiveSectionId(sectionMetrics, {
+  const activeSectionId = getActiveSectionId(resolvedSectionMetrics, {
     scrollY: window.scrollY,
     viewportHeight: window.innerHeight,
     documentHeight: document.documentElement.scrollHeight,
   });
 
   if (activeSectionId) {
-    setActiveNavigationChip(activeSectionId);
+    setActiveNavigationChip(activeSectionId, options);
   }
+}
+
+function createAnimationFrameScheduler(callback) {
+  let frameId = null;
+
+  return () => {
+    if (typeof window === 'undefined' || typeof window.requestAnimationFrame !== 'function') {
+      callback();
+      return;
+    }
+
+    if (frameId !== null) {
+      return;
+    }
+
+    frameId = window.requestAnimationFrame(() => {
+      frameId = null;
+      callback();
+    });
+  };
 }
 
 function attachCardPressFeedback() {
@@ -425,21 +466,48 @@ function initializePage() {
 
   nav.innerHTML = renderNavigation(departments);
   board.innerHTML = departments.map(renderDepartmentSection).join('');
-  syncTopbarTint(topbar);
-  syncActiveSectionByScroll();
   attachCardPressFeedback();
 
   if (typeof window !== 'undefined') {
+    const sections = Array.from(board.querySelectorAll('.department-lane'));
+    const shouldAutoScrollActiveChip = typeof window.matchMedia === 'function'
+      ? !window.matchMedia('(hover: none), (pointer: coarse)').matches
+      : true;
+    let sectionMetrics = [];
+
+    const refreshSectionMetrics = () => {
+      sectionMetrics = getSectionMetrics(sections);
+      syncTopbarTint(topbar);
+      syncActiveSectionByScroll(sectionMetrics, {
+        shouldScrollIntoView: shouldAutoScrollActiveChip,
+        scrollBehavior: 'auto',
+      });
+    };
+
+    const handleScroll = createAnimationFrameScheduler(() => {
+      syncTopbarTint(topbar);
+      syncActiveSectionByScroll(sectionMetrics, {
+        shouldScrollIntoView: false,
+      });
+    });
+
+    const handleResize = createAnimationFrameScheduler(refreshSectionMetrics);
+
+    refreshSectionMetrics();
+
     window.addEventListener(
       'scroll',
-      () => {
-        syncTopbarTint(topbar);
-        syncActiveSectionByScroll();
-      },
+      handleScroll,
       { passive: true },
     );
 
-    window.addEventListener('resize', syncActiveSectionByScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+    window.addEventListener('orientationchange', handleResize, { passive: true });
+    window.addEventListener('load', refreshSectionMetrics, { once: true });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refreshSectionMetrics).catch(() => {});
+    }
   }
 }
 
@@ -457,6 +525,7 @@ if (typeof module !== 'undefined') {
     slugifyDepartment,
     renderDepartmentSection,
     shouldTintNavigation,
+    getSectionMetrics,
     getActiveSectionId,
     setActiveNavigationChip,
     renderNavigation,

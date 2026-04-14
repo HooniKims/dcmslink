@@ -8,6 +8,7 @@ const {
   slugifyDepartment,
   renderDepartmentSection,
   shouldTintNavigation,
+  getSectionMetrics,
   getActiveSectionId,
   setActiveNavigationChip,
 } = require('../assets/app.js');
@@ -54,6 +55,37 @@ test('renderDepartmentSection outputs section anchor and sample link cards', () 
 test('shouldTintNavigation only activates after scrolling past threshold', () => {
   assert.equal(shouldTintNavigation(0), false);
   assert.equal(shouldTintNavigation(24), true);
+});
+
+test('getSectionMetrics snapshots section offsets for reuse during scroll', () => {
+  const previousWindow = global.window;
+  global.window = {
+    scrollY: 120,
+  };
+
+  const sections = [
+    {
+      dataset: { section: 'gyomugihwaegbu' },
+      getBoundingClientRect() {
+        return { top: 40 };
+      },
+    },
+    {
+      dataset: { section: 'jinrojinhagbu' },
+      getBoundingClientRect() {
+        return { top: 780 };
+      },
+    },
+  ];
+
+  try {
+    assert.deepEqual(getSectionMetrics(sections), [
+      { id: 'gyomugihwaegbu', top: 160 },
+      { id: 'jinrojinhagbu', top: 900 },
+    ]);
+  } finally {
+    global.window = previousWindow;
+  }
 });
 
 test('getActiveSectionId promotes the final section when the page is scrolled to the bottom', () => {
@@ -148,6 +180,58 @@ test('setActiveNavigationChip scrolls the newly active mobile chip into view onc
   assert.equal(activeScrollCalls, 1);
 });
 
+test('setActiveNavigationChip can skip auto-scrolling while still updating active state', () => {
+  const createClassList = (initial = []) => {
+    const names = new Set(initial);
+    return {
+      toggle(name, force) {
+        if (force) {
+          names.add(name);
+          return true;
+        }
+        names.delete(name);
+        return false;
+      },
+      contains(name) {
+        return names.has(name);
+      },
+    };
+  };
+
+  let activeScrollCalls = 0;
+  const chips = [
+    {
+      dataset: { navChip: 'gyomugihwaegbu' },
+      classList: createClassList(['is-active']),
+      scrollIntoView() {},
+    },
+    {
+      dataset: { navChip: 'jinrojinhagbu' },
+      classList: createClassList(),
+      scrollIntoView() {
+        activeScrollCalls += 1;
+      },
+    },
+  ];
+
+  const previousDocument = global.document;
+  global.document = {
+    querySelectorAll() {
+      return chips;
+    },
+  };
+
+  try {
+    setActiveNavigationChip('jinrojinhagbu', { shouldScrollIntoView: false });
+  } finally {
+    global.document = previousDocument;
+  }
+
+  assert.equal(chips[0].classList.contains('is-active'), false);
+  assert.equal(chips[1].classList.contains('is-active'), true);
+  assert.equal(activeScrollCalls, 0);
+});
+
 test('renderDepartmentSection falls back safely when a link url is missing', () => {
   const html = renderDepartmentSection({
     name: '교무기획부',
@@ -200,19 +284,28 @@ test('falling pattern styles use the Background.md radial-gradient field', () =>
   assert.match(css, /background-position:\s*var\(--falling-pattern-start\)/);
 });
 
-test('mobile falling pattern loosens spacing so it does not read as a dotted texture', () => {
+test('mobile disables the falling pattern layers to keep scrolling stable', () => {
   const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'styles.css'), 'utf8');
 
   assert.match(css, /@media \(max-width: 640px\)[\s\S]*--falling-pattern-grid-size:\s*14px 14px/);
-  assert.match(css, /@media \(max-width: 640px\)[\s\S]*transform:\s*scale\(1\.32\)/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.falling-pattern,\s*[\s\S]*\.ambient\s*\{[\s\S]*display:\s*none;/);
 });
 
-test('mobile falling pattern removes right-heavy darkening and strengthens downward motion', () => {
+test('mobile topbar removes backdrop blur so sticky scrolling stays responsive', () => {
   const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'styles.css'), 'utf8');
 
-  assert.match(css, /@media \(max-width: 640px\)[\s\S]*mix-blend-mode:\s*normal/);
-  assert.match(css, /@media \(max-width: 640px\)[\s\S]*--falling-pattern-duration:\s*96s/);
-  assert.match(css, /@media \(max-width: 640px\)[\s\S]*circle at top center/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.topbar\s*\{[\s\S]*backdrop-filter:\s*none;/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.topbar\s*\{[\s\S]*-webkit-backdrop-filter:\s*none;/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.topbar\.is-tinted\s*\{[\s\S]*rgba\(246, 249, 252, 0\.97\)/);
+});
+
+test('coarse-pointer devices drop the expensive fixed effects regardless of viewport width', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'styles.css'), 'utf8');
+
+  assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]*html\s*\{[\s\S]*scroll-behavior:\s*auto;/);
+  assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]*\.falling-pattern,\s*[\s\S]*\.ambient\s*\{[\s\S]*display:\s*none;/);
+  assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]*\.topbar\s*\{[\s\S]*backdrop-filter:\s*none;/);
+  assert.match(css, /@media \(hover: none\), \(pointer: coarse\)[\s\S]*\.nav-chip,\s*[\s\S]*\.link-card\s*\{[\s\S]*transition-duration:\s*0\.01ms;/);
 });
 
 test('hero, sections, and tinted header keep a lighter translucent wash', () => {
