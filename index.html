@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deungchon Middel School Work Link</title>
+    <meta
+      name="description"
+      content="등촌중학교 부서별 업무용 링크를 한 화면에서 빠르게 찾을 수 있는 데스크톱 우선 링크 허브"
+    />
+    <link rel="icon" type="image/png" href="./DCMS_Logo.png" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <div class="falling-pattern" data-falling-pattern aria-hidden="true">
+      <div class="falling-pattern__motion"></div>
+      <div class="falling-pattern__overlay"></div>
+    </div>
+
+    <div class="site-shell">
+      <div class="ambient ambient--left" aria-hidden="true"></div>
+      <div class="ambient ambient--right" aria-hidden="true"></div>
+
+      <header class="topbar" data-topbar>
+        <a class="brand" href="#top" aria-label="맨 위로 이동">
+          <img class="brand__logo" src="./DCMS_Logo.png" alt="등촌중학교 로고" />
+          <span class="brand__copy">
+            <strong>Deungchon Middel School Work Link</strong>
+            <span>Department work link board</span>
+          </span>
+        </a>
+
+        <nav class="department-nav" aria-label="부서 바로가기" data-department-nav></nav>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero__copy">
+            <span class="hero__eyebrow">DCMS School WorkFlow Hub</span>
+            <h1>등촌중학교 부서별 링크 허브</h1>
+            <p>
+              자주 쓰는 업무용 링크를 부서별로 모아두고<br />
+              상단 메뉴에서 바로 이동할 수 있게 만든 페이지입니다.<br />
+              지금은 샘플 링크로 전체 구조와 디자인을 먼저 보고, 이후 실제 링크를 하나씩 교체하면 됩니다.
+            </p>
+          </div>
+        </section>
+
+        <div class="department-board" data-department-board>
+          <p class="board-loading">업무 링크 보드를 불러오는 중입니다.</p>
+        </div>
+      </main>
+    </div>
+
+    <noscript>
+      <div class="noscript">
+        JavaScript가 꺼져 있으면 부서별 링크 보드가 자동으로 채워지지 않습니다.
+      </div>
+    </noscript>
+
+    <script src="./assets/app.js"></script>
+  </body>
+</html>

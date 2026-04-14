@@ -1,0 +1,416 @@
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+
+  .card {
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+  }
+
+  .card-image {
+    padding: 18px;
+    background:
+      radial-gradient(circle at top left, rgba(0, 113, 227, 0.14), transparent 34%),
+      linear-gradient(180deg, rgba(247, 248, 251, 1), rgba(240, 242, 247, 1));
+  }
+
+  .card-body {
+    padding: 18px 18px 22px;
+  }
+
+  .card-body h3 {
+    margin: 0 0 8px;
+    font-size: 1.15rem;
+  }
+
+  .card-body p {
+    margin: 0;
+    color: #465467;
+    line-height: 1.55;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 113, 227, 0.08);
+    color: #0057b1;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .mock-page {
+    min-height: 390px;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+  }
+
+  .mock-page.apple-board {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.82), rgba(246, 248, 252, 0.98)),
+      linear-gradient(180deg, #eff3f9, #f7f8fb);
+  }
+
+  .mock-page.midnight-board {
+    background:
+      radial-gradient(circle at top center, rgba(41, 151, 255, 0.18), transparent 30%),
+      linear-gradient(180deg, #0d1726, #162234);
+    color: white;
+  }
+
+  .mock-page.utility-board {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.96), rgba(247, 248, 250, 0.96)),
+      linear-gradient(180deg, #f4f5f7, #eceff3);
+  }
+
+  .mock-topbar {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    top: 18px;
+    height: 46px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    backdrop-filter: blur(18px);
+    font-size: 0.67rem;
+    letter-spacing: 0.02em;
+  }
+
+  .apple-board .mock-topbar,
+  .utility-board .mock-topbar {
+    background: rgba(255,255,255,0.68);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: #334155;
+  }
+
+  .midnight-board .mock-topbar {
+    background: rgba(12, 18, 28, 0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.88);
+  }
+
+  .mock-logo {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: center / cover no-repeat url('/files/DCMS_Logo.png');
+    flex: 0 0 auto;
+  }
+
+  .mock-nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 12px;
+    flex: 1;
+  }
+
+  .mock-pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.14);
+  }
+
+  .mock-hero {
+    padding: 88px 22px 18px;
+  }
+
+  .mock-eyebrow {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .apple-board .mock-eyebrow,
+  .utility-board .mock-eyebrow {
+    background: rgba(0, 113, 227, 0.1);
+    color: #0057b1;
+  }
+
+  .midnight-board .mock-eyebrow {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+  }
+
+  .mock-title {
+    font-size: 1.32rem;
+    line-height: 1.15;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .mock-copy {
+    margin: 10px 0 0;
+    font-size: 0.76rem;
+    line-height: 1.55;
+    max-width: 28ch;
+    color: inherit;
+    opacity: 0.78;
+  }
+
+  .lane-stack {
+    display: grid;
+    gap: 12px;
+    padding: 0 22px 22px;
+  }
+
+  .lane {
+    border-radius: 20px;
+    padding: 12px;
+  }
+
+  .apple-board .lane,
+  .utility-board .lane {
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+  }
+
+  .midnight-board .lane {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .lane-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .lane-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .lane-cards.compact {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .link-card {
+    min-height: 56px;
+    border-radius: 16px;
+    padding: 10px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .apple-board .link-card,
+  .utility-board .link-card {
+    background: rgba(240, 244, 249, 0.9);
+  }
+
+  .midnight-board .link-card {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .link-name {
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .link-meta {
+    margin-top: 6px;
+    font-size: 0.58rem;
+    opacity: 0.68;
+  }
+
+  @media (max-width: 960px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<h2>Deungchon Middle School Work Link 시안 비교</h2>
+<p class="subtitle">학교 엠블럼 파비콘, 상단 유리질 메뉴바, 부서별 링크 보드, 클릭감 있는 링크 카드라는 공통 조건 위에서 세 방향을 비교했습니다.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-page apple-board">
+        <div class="mock-topbar">
+          <div style="display:flex;align-items:center;min-width:0;">
+            <div class="mock-logo"></div>
+            <div class="mock-nav">
+              <span class="mock-pill">교무기획부</span>
+              <span>교육연구부</span>
+              <span>생활안전부</span>
+              <span>창체활동부</span>
+            </div>
+          </div>
+          <span>빠른 이동</span>
+        </div>
+
+        <div class="mock-hero">
+          <span class="mock-eyebrow">Recommended</span>
+          <h3 class="mock-title">Apple Board</h3>
+          <p class="mock-copy">애플식 절제감 위에 칸반 보드 구조를 얹은 안입니다. 학교 내부 업무용인데도 너무 딱딱하지 않고, 링크를 찾는 속도가 빠릅니다.</p>
+        </div>
+
+        <div class="lane-stack">
+          <div class="lane">
+            <div class="lane-head"><span>교무기획부</span><span>4 links</span></div>
+            <div class="lane-cards">
+              <div class="link-card"><span class="link-name">출장 / 연가</span><span class="link-meta">업무 포털</span></div>
+              <div class="link-card"><span class="link-name">시간표</span><span class="link-meta">수업 배치</span></div>
+              <div class="link-card"><span class="link-name">결재</span><span class="link-meta">전자 문서</span></div>
+            </div>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>교육연구부</span><span>3 links</span></div>
+            <div class="lane-cards">
+              <div class="link-card"><span class="link-name">연수 신청</span><span class="link-meta">교원 역량</span></div>
+              <div class="link-card"><span class="link-name">평가계획</span><span class="link-meta">공유 문서</span></div>
+              <div class="link-card"><span class="link-name">연구자료</span><span class="link-meta">아카이브</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Apple Board</h3>
+      <p>가장 추천하는 안입니다. 밝은 바탕, 유리질 상단 메뉴, 부서별 보드 레인으로 정보 탐색이 가장 자연스럽습니다.</p>
+      <div class="tag-row">
+        <span class="tag">추천</span>
+        <span class="tag">업무용 안정감</span>
+        <span class="tag">칸반 구조 선명</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-page midnight-board">
+        <div class="mock-topbar">
+          <div style="display:flex;align-items:center;min-width:0;">
+            <div class="mock-logo"></div>
+            <div class="mock-nav">
+              <span class="mock-pill">생활안전부</span>
+              <span>과학정보부</span>
+              <span>인성상담부</span>
+            </div>
+          </div>
+          <span>board mode</span>
+        </div>
+
+        <div class="mock-hero">
+          <span class="mock-eyebrow">Bold</span>
+          <h3 class="mock-title">Midnight Board</h3>
+          <p class="mock-copy">더 프리미엄하고 무게감 있는 안입니다. 시선은 강하게 잡지만, 내부 업무 사이트치고는 조금 더 분위기가 진합니다.</p>
+        </div>
+
+        <div class="lane-stack">
+          <div class="lane">
+            <div class="lane-head"><span>생활안전부</span><span>5 links</span></div>
+            <div class="lane-cards">
+              <div class="link-card"><span class="link-name">학생 생활기록</span><span class="link-meta">daily</span></div>
+              <div class="link-card"><span class="link-name">출결 관리</span><span class="link-meta">check</span></div>
+              <div class="link-card"><span class="link-name">상황 보고</span><span class="link-meta">form</span></div>
+            </div>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>과학정보부</span><span>3 links</span></div>
+            <div class="lane-cards">
+              <div class="link-card"><span class="link-name">기자재 예약</span><span class="link-meta">lab</span></div>
+              <div class="link-card"><span class="link-name">SW 수업실</span><span class="link-meta">class</span></div>
+              <div class="link-card"><span class="link-name">계정 관리</span><span class="link-meta">admin</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Midnight Board</h3>
+      <p>어두운 배경과 푸른 강조색으로 존재감이 큰 안입니다. 고급스럽지만, 매일 쓰는 내부 업무 사이트로는 조금 더 강한 인상입니다.</p>
+      <div class="tag-row">
+        <span class="tag">고대비</span>
+        <span class="tag">프리미엄</span>
+        <span class="tag">야간 느낌</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mock-page utility-board">
+        <div class="mock-topbar">
+          <div style="display:flex;align-items:center;min-width:0;">
+            <div class="mock-logo"></div>
+            <div class="mock-nav">
+              <span class="mock-pill">통합지원부</span>
+              <span>진로진학부</span>
+              <span>교무기획부</span>
+            </div>
+          </div>
+          <span>dense view</span>
+        </div>
+
+        <div class="mock-hero">
+          <span class="mock-eyebrow">Compact</span>
+          <h3 class="mock-title">Utility Compact</h3>
+          <p class="mock-copy">한 화면에 많은 링크를 넣기 쉬운 안입니다. 효율은 높지만, 사용자가 원한 칸반 보드 감성은 상대적으로 약합니다.</p>
+        </div>
+
+        <div class="lane-stack">
+          <div class="lane">
+            <div class="lane-head"><span>통합지원부</span><span>8 links</span></div>
+            <div class="lane-cards compact">
+              <div class="link-card"><span class="link-name">공문함</span><span class="link-meta">공유</span></div>
+              <div class="link-card"><span class="link-name">예산</span><span class="link-meta">관리</span></div>
+              <div class="link-card"><span class="link-name">품의</span><span class="link-meta">처리</span></div>
+              <div class="link-card"><span class="link-name">운영표</span><span class="link-meta">일정</span></div>
+            </div>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>진로진학부</span><span>8 links</span></div>
+            <div class="lane-cards compact">
+              <div class="link-card"><span class="link-name">진로검사</span><span class="link-meta">학생</span></div>
+              <div class="link-card"><span class="link-name">상담기록</span><span class="link-meta">교사</span></div>
+              <div class="link-card"><span class="link-name">입시자료</span><span class="link-meta">자료</span></div>
+              <div class="link-card"><span class="link-name">체험처</span><span class="link-meta">연계</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Utility Compact</h3>
+      <p>링크 수가 매우 많을 때 유리한 실무형 안입니다. 다만 브랜드감과 인상은 가장 약합니다.</p>
+      <div class="tag-row">
+        <span class="tag">고밀도</span>
+        <span class="tag">실무형</span>
+        <span class="tag">감성 낮음</span>
+      </div>
+    </div>
+  </div>
+</div>
