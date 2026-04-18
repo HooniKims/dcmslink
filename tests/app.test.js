@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const {
+  archivedDepartments,
   departments,
   slugifyDepartment,
   renderDepartmentSection,
@@ -11,11 +12,12 @@ const {
   getSectionMetrics,
   getActiveSectionId,
   setActiveNavigationChip,
+  scrollToDepartmentSection,
 } = require('../assets/app.js');
 
-test('defines the eight departments in the approved order', () => {
+test('keeps the full department archive in the approved order', () => {
   assert.deepEqual(
-    departments.map((item) => item.name),
+    archivedDepartments.map((item) => item.name),
     [
       '교무기획부',
       '교육연구부',
@@ -27,6 +29,105 @@ test('defines the eight departments in the approved order', () => {
       '진로진학부',
     ],
   );
+});
+
+test('renders only 창체활동부 and 과학정보부 in the current layout', () => {
+  assert.deepEqual(
+    departments.map((item) => item.name),
+    [
+      '과학정보부',
+      '창체활동부',
+    ],
+  );
+});
+
+test('과학정보부 세 번째 카드는 PC 이름 변경 안내 링크를 사용한다', () => {
+  const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
+
+  assert.ok(scienceDepartment);
+  assert.deepEqual(scienceDepartment.links[2], {
+    title: 'PC 이름 변경',
+    description: '사용중인 PC의 이름 변경 방법',
+    icon: 'pc',
+    tag: 'PC',
+    url: 'https://www.notion.so/PC-346bc937bea180e99434f7089e955aed?source=copy_link',
+  });
+});
+
+test('과학정보부 네 번째 카드는 IP 주소 설정 안내 링크를 사용한다', () => {
+  const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
+
+  assert.ok(scienceDepartment);
+  assert.deepEqual(scienceDepartment.links[3], {
+    title: 'IP 주소 설정',
+    description: '사용중인 PC의 IP 설정 방법',
+    icon: 'network',
+    tag: 'IP',
+    url: 'https://www.notion.so/IP-346bc937bea180aca452c6e13ce62901?source=copy_link',
+  });
+});
+
+test('과학정보부 다섯 번째 카드는 한글, 오피스 안내 링크를 사용한다', () => {
+  const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
+
+  assert.ok(scienceDepartment);
+  assert.deepEqual(scienceDepartment.links[4], {
+    title: '한글, 오피스',
+    description: '한글, 오피스 설치 파일 및 방법',
+    icon: 'office',
+    tag: 'Office',
+    url: 'https://www.notion.so/346bc937bea1808c83cfd54a0d037762?source=copy_link',
+  });
+});
+
+test('office icon renders as a typewriter shape for 한글, 오피스 cards', () => {
+  const html = renderDepartmentSection({
+    name: '과학정보부',
+    description: '과학실, 정보기기, 계정 링크',
+    links: [
+      {
+        title: '한글, 오피스',
+        description: '한글, 오피스 설치 파일 및 방법',
+        icon: 'office',
+        tag: 'Office',
+        url: 'https://www.notion.so/346bc937bea1808c83cfd54a0d037762?source=copy_link',
+      },
+    ],
+  });
+
+  assert.match(html, /M7\.75 5\.25A2\.25 2\.25/);
+});
+
+test('창체활동부는 방송 신청 카드 하나만 남긴다', () => {
+  const activityDepartment = archivedDepartments.find((item) => item.name === '창체활동부');
+
+  assert.ok(activityDepartment);
+  assert.equal(activityDepartment.links.length, 1);
+  assert.deepEqual(activityDepartment.links[0], {
+    title: '방송 신청',
+    description: '방송 진행 협조 신청 링크',
+    icon: 'broadcast',
+    tag: 'Broadcast',
+    url: 'https://docs.google.com/spreadsheets/d/1YRYsjDE9h8yxIw0o57Gqh06e035-BuZYrkq6Phez74g/edit?gid=0#gid=0',
+  });
+});
+
+test('broadcast icon renders as a microphone shape for 방송 신청 cards', () => {
+  const html = renderDepartmentSection({
+    name: '창체활동부',
+    description: '창체 운영, 행사, 기록 링크',
+    links: [
+      {
+        title: '방송 신청',
+        description: '방송 진행 협조 신청 링크',
+        icon: 'broadcast',
+        tag: 'Broadcast',
+        url: 'https://docs.google.com/spreadsheets/d/1YRYsjDE9h8yxIw0o57Gqh06e035-BuZYrkq6Phez74g/edit?gid=0#gid=0',
+      },
+    ],
+  });
+
+  assert.match(html, /M12 4\.25A2\.75 2\.75/);
 });
 
 test('slugifyDepartment creates stable section ids', () => {
@@ -48,6 +149,7 @@ test('renderDepartmentSection outputs section anchor and sample link cards', () 
   });
 
   assert.match(html, /id="gyomugihwaegbu"/);
+  assert.match(html, /class="department-lane department-lane--expanded"/);
   assert.match(html, /전자 결재 바로가기/);
   assert.match(html, /Open link/);
 });
@@ -232,6 +334,92 @@ test('setActiveNavigationChip can skip auto-scrolling while still updating activ
   assert.equal(activeScrollCalls, 0);
 });
 
+test('scrollToDepartmentSection updates the active chip and scrolls with sticky topbar offset', () => {
+  const createClassList = (initial = []) => {
+    const names = new Set(initial);
+    return {
+      toggle(name, force) {
+        if (force) {
+          names.add(name);
+          return true;
+        }
+        names.delete(name);
+        return false;
+      },
+      contains(name) {
+        return names.has(name);
+      },
+    };
+  };
+
+  const chips = [
+    {
+      dataset: { navChip: 'changchehwaldongbu' },
+      classList: createClassList(['is-active']),
+    },
+    {
+      dataset: { navChip: 'gwahagjeongbobu' },
+      classList: createClassList(),
+    },
+  ];
+
+  let scrollToOptions = null;
+  let replacedHash = null;
+
+  const previousDocument = global.document;
+  const previousWindow = global.window;
+
+  global.document = {
+    querySelectorAll() {
+      return chips;
+    },
+    getElementById(id) {
+      if (id !== 'gwahagjeongbobu') {
+        return null;
+      }
+      return {
+        getBoundingClientRect() {
+          return { top: 520 };
+        },
+      };
+    },
+  };
+
+  global.window = {
+    scrollY: 100,
+    scrollTo(options) {
+      scrollToOptions = options;
+    },
+    history: {
+      replaceState(_state, _title, hash) {
+        replacedHash = hash;
+      },
+    },
+    location: {},
+  };
+
+  try {
+    scrollToDepartmentSection('gwahagjeongbobu', {
+      topbar: {
+        getBoundingClientRect() {
+          return { height: 72 };
+        },
+      },
+    });
+  } finally {
+    global.document = previousDocument;
+    global.window = previousWindow;
+  }
+
+  assert.equal(chips[0].classList.contains('is-active'), false);
+  assert.equal(chips[1].classList.contains('is-active'), true);
+  assert.deepEqual(scrollToOptions, {
+    top: 520,
+    behavior: 'smooth',
+  });
+  assert.equal(replacedHash, '#gwahagjeongbobu');
+});
+
 test('renderDepartmentSection falls back safely when a link url is missing', () => {
   const html = renderDepartmentSection({
     name: '교무기획부',
@@ -270,8 +458,8 @@ test('index.html uses the simplified hero without board intro or stats panel', (
   assert.doesNotMatch(html, /class="hero__panel"/);
   assert.match(html, /DCMS School WorkFlow Hub/);
   assert.doesNotMatch(html, /<h1>[\s\S]*<br ?\/?>[\s\S]*<\/h1>/);
-  assert.match(html, /업무용 링크를 부서별로 모아두고<br \/>/);
-  assert.match(html, /등촌중학교 부서별 링크 허브/);
+  assert.match(html, /자주 쓰는 업무용 링크 아카이브<br \/>/);
+  assert.match(html, /등촌중학교 부서별 링크 모음/);
 });
 
 test('falling pattern styles use the Background.md radial-gradient field', () => {

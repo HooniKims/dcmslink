@@ -9,7 +9,7 @@ const departmentIdMap = {
   진로진학부: 'jinrojinhagbu',
 };
 
-const departments = [
+const archivedDepartments = [
   {
     name: '교무기획부',
     description: '기본 운영, 시간표, 결재, 문서 흐름',
@@ -105,28 +105,11 @@ const departments = [
     description: '창체 운영, 행사, 기록 링크',
     links: [
       {
-        title: '행사 운영표',
-        description: '행사 준비 샘플 링크',
-        tag: 'Event',
-        url: 'https://example.com/event',
-      },
-      {
-        title: '봉사활동 기록',
-        description: '활동 기록 샘플 링크',
-        tag: 'Record',
-        url: 'https://example.com/volunteer',
-      },
-      {
-        title: '동아리 관리',
-        description: '창체 동아리 샘플 링크',
-        tag: 'Club',
-        url: 'https://example.com/club',
-      },
-      {
-        title: '체험학습 자료',
-        description: '체험활동 자료 샘플 링크',
-        tag: 'Activity',
-        url: 'https://example.com/activity',
+        title: '방송 신청',
+        description: '방송 진행 협조 신청 링크',
+        icon: 'broadcast',
+        tag: 'Broadcast',
+        url: 'https://docs.google.com/spreadsheets/d/1YRYsjDE9h8yxIw0o57Gqh06e035-BuZYrkq6Phez74g/edit?gid=0#gid=0',
       },
     ],
   },
@@ -135,28 +118,39 @@ const departments = [
     description: '과학실, 정보기기, 계정 링크',
     links: [
       {
-        title: '기자재 예약',
-        description: '실험 장비 예약 샘플 링크',
+        title: '수리 요청하기',
+        description: '디지털 기기 수리 요청 링크',
+        icon: 'repair',
         tag: 'Lab',
-        url: 'https://example.com/lab',
+        url: 'https://script.google.com/a/macros/dc.ms.kr/s/AKfycbwbaFujZN74-j7iBJ8LfgDZcC9SZSkriFsdtroyx0SW4Z2BJQyC4qIzTS6ZubLhByyzzA/exec',
       },
       {
-        title: 'SW 수업실',
-        description: '정보 수업실 샘플 링크',
+        title: '프린터 설치',
+        description: '교무실 프린터 설치 방법',
+        icon: 'printer',
         tag: 'Class',
-        url: 'https://example.com/classroom',
+        url: 'https://www.notion.so/345bc937bea18029ba62da7009fbfe97?source=copy_link',
       },
       {
-        title: '계정 관리',
-        description: '서비스 계정 샘플 링크',
-        tag: 'Account',
-        url: 'https://example.com/account',
+        title: 'PC 이름 변경',
+        description: '사용중인 PC의 이름 변경 방법',
+        icon: 'pc',
+        tag: 'PC',
+        url: 'https://www.notion.so/PC-346bc937bea180e99434f7089e955aed?source=copy_link',
       },
       {
-        title: '기기 점검표',
-        description: '기기 점검 샘플 링크',
-        tag: 'Check',
-        url: 'https://example.com/device',
+        title: 'IP 주소 설정',
+        description: '사용중인 PC의 IP 설정 방법',
+        icon: 'network',
+        tag: 'IP',
+        url: 'https://www.notion.so/IP-346bc937bea180aca452c6e13ce62901?source=copy_link',
+      },
+      {
+        title: '한글, 오피스',
+        description: '한글, 오피스 설치 파일 및 방법',
+        icon: 'office',
+        tag: 'Office',
+        url: 'https://www.notion.so/346bc937bea1808c83cfd54a0d037762?source=copy_link',
       },
     ],
   },
@@ -252,6 +246,68 @@ const departments = [
   },
 ];
 
+// Keep the full department dataset archived so hidden departments can be restored
+// later without changing the current layout or card structure.
+const visibleDepartmentNames = [
+  '과학정보부',
+  '창체활동부',
+];
+
+const departments = visibleDepartmentNames
+  .map((name) => archivedDepartments.find((department) => department.name === name))
+  .filter(Boolean);
+
+// Card authoring rules:
+// 1. Action-oriented cards should include an `icon` so restored and newly added cards
+//    keep the same title treatment as the current highlighted cards.
+// 2. Icons must stay minimal and use a single filled SVG path for stable rendering.
+// 3. Keep titles short enough to fit inside the title pill without wrapping on mobile.
+// 4. Use the same card shape for archived departments so restored cards inherit the layout.
+const LINK_TITLE_ICONS = {
+  repair: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M21.67 18.17 13.91 10.4a5.02 5.02 0 0 0-6.6-6.03l3.02 3.02-2.95 2.95-3.04-3.03a5.02 5.02 0 0 0 6.08 6.56l7.76 7.76a1.24 1.24 0 0 0 1.75 0l1.74-1.74a1.24 1.24 0 0 0 0-1.75Z" />
+      </svg>
+    </span>
+  `,
+  printer: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M7 3.5h10a1 1 0 0 1 1 1v3H6v-3a1 1 0 0 1 1-1Zm-2 5h14a2.5 2.5 0 0 1 2.5 2.5v4A2.5 2.5 0 0 1 19 17.5h-1v3H6v-3H5A2.5 2.5 0 0 1 2.5 15v-4A2.5 2.5 0 0 1 5 8.5Zm3 7v2h8v-2H8Zm0-9v1h8v-1H8Z" />
+      </svg>
+    </span>
+  `,
+  pc: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M5 4.5h14A2.5 2.5 0 0 1 21.5 7v8a2.5 2.5 0 0 1-2.5 2.5h-4v1.5h2a1 1 0 1 1 0 2H7a1 1 0 1 1 0-2h2v-1.5H5A2.5 2.5 0 0 1 2.5 15V7A2.5 2.5 0 0 1 5 4.5Zm0 2a.5.5 0 0 0-.5.5v8c0 .28.22.5.5.5h14a.5.5 0 0 0 .5-.5V7a.5.5 0 0 0-.5-.5H5Z" />
+      </svg>
+    </span>
+  `,
+  network: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M6 4.75A2.25 2.25 0 0 0 3.75 7v10A2.25 2.25 0 0 0 6 19.25h12A2.25 2.25 0 0 0 20.25 17V7A2.25 2.25 0 0 0 18 4.75H6Zm0 2h12a.25.25 0 0 1 .25.25V17a.25.25 0 0 1-.25.25h-1.35v-2.4a.7.7 0 0 0-.7-.7H14.8v3.1h-1.25v-3.1H12.4v3.1h-.8v-3.1h-1.2v3.1H9.15v-3.1H8.05a.7.7 0 0 0-.7.7v2.4H6A.25.25 0 0 1 5.75 17V7A.25.25 0 0 1 6 6.75Zm1.2 2.1a.75.75 0 0 0-.75.75v1.95a.75.75 0 0 0 .75.75h1.05A.75.75 0 0 0 9 11.55V9.6a.75.75 0 0 0-.75-.75H7.2Zm3.2 0a.75.75 0 0 0-.75.75v1.95a.75.75 0 0 0 .75.75h1.05a.75.75 0 0 0 .75-.75V9.6a.75.75 0 0 0-.75-.75H10.4Zm3.2 0a.75.75 0 0 0-.75.75v1.95a.75.75 0 0 0 .75.75h1.05a.75.75 0 0 0 .75-.75V9.6a.75.75 0 0 0-.75-.75H13.6Z" />
+      </svg>
+    </span>
+  `,
+  broadcast: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M12 4.25A2.75 2.75 0 0 0 9.25 7v3a2.75 2.75 0 1 0 5.5 0V7A2.75 2.75 0 0 0 12 4.25Zm-4 5.5a1 1 0 0 1 1 1 3 3 0 1 0 6 0 1 1 0 1 1 2 0 4.99 4.99 0 0 1-4 4.9v1.35h2.1a1 1 0 1 1 0 2H8.9a1 1 0 1 1 0-2H11V15.65a4.99 4.99 0 0 1-4-4.9 1 1 0 0 1 1-1Z" />
+      </svg>
+    </span>
+  `,
+  office: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M7.75 5.25A2.25 2.25 0 0 0 5.5 7.5v1.85a2.4 2.4 0 0 0-1.75 2.3V16A2.25 2.25 0 0 0 6 18.25h12A2.25 2.25 0 0 0 20.25 16v-4.35a2.4 2.4 0 0 0-1.75-2.3V7.5a2.25 2.25 0 0 0-2.25-2.25H7.75Zm0 2h8.5a.25.25 0 0 1 .25.25v1.85h-1.65a.75.75 0 0 0-.75.75v1.25h-4.2V10.1a.75.75 0 0 0-.75-.75H7.5V7.5a.25.25 0 0 1 .25-.25ZM6 11.35h12a.4.4 0 0 1 .25.4V16a.25.25 0 0 1-.25.25H6A.25.25 0 0 1 5.75 16v-4.25a.4.4 0 0 1 .25-.4Zm2.1 1.65a.9.9 0 1 0 0 1.8h.15a.9.9 0 0 0 0-1.8H8.1Zm3.2 0a.9.9 0 1 0 0 1.8h.15a.9.9 0 0 0 0-1.8h-.15Zm3.2 0a.9.9 0 1 0 0 1.8h.15a.9.9 0 0 0 0-1.8h-.15Z" />
+      </svg>
+    </span>
+  `,
+};
+
 function slugifyDepartment(name) {
   return departmentIdMap[name] || String(name).trim().toLowerCase().replace(/\s+/g, '-');
 }
@@ -265,6 +321,11 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+function renderLinkTitle(link) {
+  const icon = link.icon && LINK_TITLE_ICONS[link.icon] ? LINK_TITLE_ICONS[link.icon] : '';
+  return `${icon}<span>${escapeHtml(link.title)}</span>`;
+}
+
 function renderLinkCard(link) {
   const hasUrl = Boolean(link.url);
   const href = hasUrl ? escapeHtml(link.url) : '#';
@@ -274,7 +335,7 @@ function renderLinkCard(link) {
   return `
     <a class="link-card${hasUrl ? '' : ' is-disabled'}" href="${href}" ${disabledAttributes}>
       <span class="link-card__tag">${escapeHtml(link.tag)}</span>
-      <strong class="link-card__title">${escapeHtml(link.title)}</strong>
+      <strong class="link-card__title">${renderLinkTitle(link)}</strong>
       <p class="link-card__description">${escapeHtml(link.description)}</p>
       <span class="link-card__cta">Open link <span aria-hidden="true">↗</span></span>
     </a>
@@ -284,7 +345,7 @@ function renderLinkCard(link) {
 function renderDepartmentSection(department) {
   const cards = department.links.map(renderLinkCard).join('');
   return `
-    <section class="department-lane" id="${slugifyDepartment(department.name)}" data-section="${slugifyDepartment(department.name)}">
+    <section class="department-lane department-lane--expanded" id="${slugifyDepartment(department.name)}" data-section="${slugifyDepartment(department.name)}">
       <div class="department-lane__header">
         <div>
           <p class="department-lane__eyebrow">Department board</p>
@@ -389,6 +450,46 @@ function setActiveNavigationChip(sectionId, options = {}) {
   }
 }
 
+function scrollToDepartmentSection(sectionId, options = {}) {
+  if (typeof document === 'undefined' || typeof window === 'undefined' || !sectionId) {
+    return;
+  }
+
+  const { topbar = document.querySelector('[data-topbar]') } = options;
+  const section = document.getElementById(sectionId);
+
+  if (!section) {
+    return;
+  }
+
+  setActiveNavigationChip(sectionId, { shouldScrollIntoView: false });
+
+  const topbarOffset = topbar && typeof topbar.getBoundingClientRect === 'function'
+    ? topbar.getBoundingClientRect().height + 28
+    : 0;
+  const targetTop = Math.max(0, section.getBoundingClientRect().top + window.scrollY - topbarOffset);
+
+  if (typeof window.scrollTo === 'function') {
+    window.scrollTo({
+      top: targetTop,
+      behavior: 'smooth',
+    });
+  } else if (typeof section.scrollIntoView === 'function') {
+    section.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
+  if (
+    window.history
+    && typeof window.history.replaceState === 'function'
+    && window.location
+  ) {
+    window.history.replaceState(null, '', `#${sectionId}`);
+  }
+}
+
 function syncTopbarTint(topbar) {
   if (!topbar || typeof window === 'undefined') {
     return;
@@ -451,6 +552,25 @@ function attachCardPressFeedback() {
   }
 }
 
+function attachNavigationChipInteractions(nav, topbar) {
+  if (!nav) {
+    return;
+  }
+
+  nav.addEventListener('click', (event) => {
+    const chip = event.target && typeof event.target.closest === 'function'
+      ? event.target.closest('[data-nav-chip]')
+      : null;
+
+    if (!chip) {
+      return;
+    }
+
+    event.preventDefault();
+    scrollToDepartmentSection(chip.dataset.navChip, { topbar });
+  });
+}
+
 function initializePage() {
   if (typeof document === 'undefined') {
     return;
@@ -467,6 +587,7 @@ function initializePage() {
   nav.innerHTML = renderNavigation(departments);
   board.innerHTML = departments.map(renderDepartmentSection).join('');
   attachCardPressFeedback();
+  attachNavigationChipInteractions(nav, topbar);
 
   if (typeof window !== 'undefined') {
     const sections = Array.from(board.querySelectorAll('.department-lane'));
@@ -521,6 +642,7 @@ if (typeof document !== 'undefined') {
 
 if (typeof module !== 'undefined') {
   module.exports = {
+    archivedDepartments,
     departments,
     slugifyDepartment,
     renderDepartmentSection,
@@ -528,6 +650,7 @@ if (typeof module !== 'undefined') {
     getSectionMetrics,
     getActiveSectionId,
     setActiveNavigationChip,
+    scrollToDepartmentSection,
     renderNavigation,
     initializePage,
   };
