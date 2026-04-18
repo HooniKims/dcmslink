@@ -41,11 +41,37 @@ test('renders only 창체활동부 and 과학정보부 in the current layout', (
   );
 });
 
-test('과학정보부 세 번째 카드는 PC 이름 변경 안내 링크를 사용한다', () => {
+test('과학정보부 두 번째 카드는 디벗 관련 문의 링크를 사용한다', () => {
+  const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
+
+  assert.ok(scienceDepartment);
+  assert.deepEqual(scienceDepartment.links[1], {
+    title: '디벗 관련 문의',
+    description: '디벗, 애플펜슬, 전자칠판, 충전함 관련 문의',
+    icon: 'dibot',
+    tag: 'Dibot',
+    url: 'https://script.google.com/macros/s/AKfycbyBsm2hvkZ9wOMOLp6cNdTvzKAKsGx38GbV-fwY-Qrjmv0DCnBvHyUs10t92DHDGoCUig/exec',
+  });
+});
+
+test('과학정보부 세 번째 카드는 프린터 설치 안내 링크를 사용한다', () => {
   const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
 
   assert.ok(scienceDepartment);
   assert.deepEqual(scienceDepartment.links[2], {
+    title: '프린터 설치',
+    description: '교무실 프린터 설치 방법',
+    icon: 'printer',
+    tag: 'Class',
+    url: 'https://www.notion.so/345bc937bea18029ba62da7009fbfe97?source=copy_link',
+  });
+});
+
+test('과학정보부 네 번째 카드는 PC 이름 변경 안내 링크를 사용한다', () => {
+  const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
+
+  assert.ok(scienceDepartment);
+  assert.deepEqual(scienceDepartment.links[3], {
     title: 'PC 이름 변경',
     description: '사용중인 PC의 이름 변경 방법',
     icon: 'pc',
@@ -54,11 +80,11 @@ test('과학정보부 세 번째 카드는 PC 이름 변경 안내 링크를 사
   });
 });
 
-test('과학정보부 네 번째 카드는 IP 주소 설정 안내 링크를 사용한다', () => {
+test('과학정보부 다섯 번째 카드는 IP 주소 설정 안내 링크를 사용한다', () => {
   const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
 
   assert.ok(scienceDepartment);
-  assert.deepEqual(scienceDepartment.links[3], {
+  assert.deepEqual(scienceDepartment.links[4], {
     title: 'IP 주소 설정',
     description: '사용중인 PC의 IP 설정 방법',
     icon: 'network',
@@ -67,17 +93,35 @@ test('과학정보부 네 번째 카드는 IP 주소 설정 안내 링크를 사
   });
 });
 
-test('과학정보부 다섯 번째 카드는 한글, 오피스 안내 링크를 사용한다', () => {
+test('과학정보부 여섯 번째 카드는 한글, 오피스 안내 링크를 사용한다', () => {
   const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
 
   assert.ok(scienceDepartment);
-  assert.deepEqual(scienceDepartment.links[4], {
+  assert.deepEqual(scienceDepartment.links[5], {
     title: '한글, 오피스',
     description: '한글, 오피스 설치 파일 및 방법',
     icon: 'office',
     tag: 'Office',
     url: 'https://www.notion.so/346bc937bea1808c83cfd54a0d037762?source=copy_link',
   });
+});
+
+test('dibot icon renders as a simple tablet shape for 디벗 관련 문의 cards', () => {
+  const html = renderDepartmentSection({
+    name: '과학정보부',
+    description: '과학실, 정보기기, 계정 링크',
+    links: [
+      {
+        title: '디벗 관련 문의',
+        description: '디벗, 애플펜슬, 전자칠판, 충전함 관련 문의',
+        icon: 'dibot',
+        tag: 'Dibot',
+        url: 'https://script.google.com/macros/s/AKfycbyBsm2hvkZ9wOMOLp6cNdTvzKAKsGx38GbV-fwY-Qrjmv0DCnBvHyUs10t92DHDGoCUig/exec',
+      },
+    ],
+  });
+
+  assert.match(html, /M7\.5 3\.75h9A2\.25 2\.25/);
 });
 
 test('office icon renders as a typewriter shape for 한글, 오피스 cards', () => {

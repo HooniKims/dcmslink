@@ -125,6 +125,13 @@ const archivedDepartments = [
         url: 'https://script.google.com/a/macros/dc.ms.kr/s/AKfycbwbaFujZN74-j7iBJ8LfgDZcC9SZSkriFsdtroyx0SW4Z2BJQyC4qIzTS6ZubLhByyzzA/exec',
       },
       {
+        title: '디벗 관련 문의',
+        description: '디벗, 애플펜슬, 전자칠판, 충전함 관련 문의',
+        icon: 'dibot',
+        tag: 'Dibot',
+        url: 'https://script.google.com/macros/s/AKfycbyBsm2hvkZ9wOMOLp6cNdTvzKAKsGx38GbV-fwY-Qrjmv0DCnBvHyUs10t92DHDGoCUig/exec',
+      },
+      {
         title: '프린터 설치',
         description: '교무실 프린터 설치 방법',
         icon: 'printer',
@@ -275,6 +282,13 @@ const LINK_TITLE_ICONS = {
     <span class="link-card__title-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
         <path d="M7 3.5h10a1 1 0 0 1 1 1v3H6v-3a1 1 0 0 1 1-1Zm-2 5h14a2.5 2.5 0 0 1 2.5 2.5v4A2.5 2.5 0 0 1 19 17.5h-1v3H6v-3H5A2.5 2.5 0 0 1 2.5 15v-4A2.5 2.5 0 0 1 5 8.5Zm3 7v2h8v-2H8Zm0-9v1h8v-1H8Z" />
+      </svg>
+    </span>
+  `,
+  dibot: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M7.5 3.75h9A2.25 2.25 0 0 1 18.75 6v12a2.25 2.25 0 0 1-2.25 2.25h-9A2.25 2.25 0 0 1 5.25 18V6A2.25 2.25 0 0 1 7.5 3.75Zm0 2a.25.25 0 0 0-.25.25v12c0 .14.11.25.25.25h9a.25.25 0 0 0 .25-.25V6a.25.25 0 0 0-.25-.25h-9Zm4.5 11.05a.7.7 0 1 0 0 1.4.7.7 0 0 0 0-1.4Z" />
       </svg>
     </span>
   `,
