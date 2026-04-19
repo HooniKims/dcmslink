@@ -41,16 +41,25 @@ test('renders only 창체활동부 and 과학정보부 in the current layout', (
   );
 });
 
-test('과학정보부 두 번째 카드는 디벗 관련 문의 링크를 사용한다', () => {
+test('과학정보부 두 번째 카드는 스캐너 사이트 카드와 두 개의 스캐너 링크를 사용한다', () => {
   const scienceDepartment = archivedDepartments.find((item) => item.name === '과학정보부');
 
   assert.ok(scienceDepartment);
   assert.deepEqual(scienceDepartment.links[1], {
-    title: '디벗 관련 문의',
-    description: '디벗, 애플펜슬, 전자칠판, 충전함 관련 문의',
-    icon: 'dibot',
-    tag: 'Dibot',
-    url: 'https://script.google.com/macros/s/AKfycbyBsm2hvkZ9wOMOLp6cNdTvzKAKsGx38GbV-fwY-Qrjmv0DCnBvHyUs10t92DHDGoCUig/exec',
+    title: '스캐너 사이트',
+    description: '등촌중 스캐너 사이트',
+    icon: 'scanner',
+    tag: 'Scanner',
+    actions: [
+      {
+        label: '행정실쪽',
+        url: 'http://10.73.78.51',
+      },
+      {
+        label: '교장실쪽',
+        url: 'http://10.73.78.52',
+      },
+    ],
   });
 });
 
@@ -122,6 +131,39 @@ test('dibot icon renders as a simple tablet shape for 디벗 관련 문의 cards
   });
 
   assert.match(html, /M7\.5 3\.75h9A2\.25 2\.25/);
+});
+
+test('scanner card renders two CTA links for the admin office and principal office scanners', () => {
+  const html = renderDepartmentSection({
+    name: '과학정보부',
+    description: '과학실, 정보기기, 계정 링크',
+    links: [
+      {
+        title: '스캐너 사이트',
+        description: '등촌중 스캐너 사이트',
+        icon: 'scanner',
+        tag: 'Scanner',
+        actions: [
+          {
+            label: '행정실쪽',
+            url: 'http://10.73.78.51',
+          },
+          {
+            label: '교장실쪽',
+            url: 'http://10.73.78.52',
+          },
+        ],
+      },
+    ],
+  });
+
+  assert.match(html, /link-card link-card--multi-action/);
+  assert.match(html, /스캐너 사이트/);
+  assert.match(html, /등촌중 스캐너 사이트/);
+  assert.match(html, /href="http:\/\/10\.73\.78\.51"/);
+  assert.match(html, /href="http:\/\/10\.73\.78\.52"/);
+  assert.match(html, /행정실쪽/);
+  assert.match(html, /교장실쪽/);
 });
 
 test('office icon renders as a typewriter shape for 한글, 오피스 cards', () => {

@@ -125,11 +125,20 @@ const archivedDepartments = [
         url: 'https://script.google.com/a/macros/dc.ms.kr/s/AKfycbwbaFujZN74-j7iBJ8LfgDZcC9SZSkriFsdtroyx0SW4Z2BJQyC4qIzTS6ZubLhByyzzA/exec',
       },
       {
-        title: '디벗 관련 문의',
-        description: '디벗, 애플펜슬, 전자칠판, 충전함 관련 문의',
-        icon: 'dibot',
-        tag: 'Dibot',
-        url: 'https://script.google.com/macros/s/AKfycbyBsm2hvkZ9wOMOLp6cNdTvzKAKsGx38GbV-fwY-Qrjmv0DCnBvHyUs10t92DHDGoCUig/exec',
+        title: '스캐너 사이트',
+        description: '등촌중 스캐너 사이트',
+        icon: 'scanner',
+        tag: 'Scanner',
+        actions: [
+          {
+            label: '행정실쪽',
+            url: 'http://10.73.78.51',
+          },
+          {
+            label: '교장실쪽',
+            url: 'http://10.73.78.52',
+          },
+        ],
       },
       {
         title: '프린터 설치',
@@ -292,6 +301,13 @@ const LINK_TITLE_ICONS = {
       </svg>
     </span>
   `,
+  scanner: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M7 4.5h10A2.5 2.5 0 0 1 19.5 7v2.25H21A1.5 1.5 0 0 1 22.5 10.75v4.75A2.5 2.5 0 0 1 20 18h-1.5v1.25A1.75 1.75 0 0 1 16.75 21h-9.5A1.75 1.75 0 0 1 5.5 19.25V18H4A2.5 2.5 0 0 1 1.5 15.5v-4.75A1.5 1.5 0 0 1 3 9.25h1.5V7A2.5 2.5 0 0 1 7 4.5Zm0 2A.5.5 0 0 0 6.5 7v2.25h11V7a.5.5 0 0 0-.5-.5H7Zm-.5 8.25v4h11v-4h-11Zm2.25 1.5h6.5a.75.75 0 1 1 0 1.5h-6.5a.75.75 0 1 1 0-1.5ZM4 11.25a.5.5 0 0 0-.5.5v3.75A.5.5 0 0 0 4 16h.5v-4.75H4Zm16 0h-.5V16h.5a.5.5 0 0 0 .5-.5v-3.75a.5.5 0 0 0-.5-.5Z" />
+      </svg>
+    </span>
+  `,
   pc: `
     <span class="link-card__title-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
@@ -340,7 +356,38 @@ function renderLinkTitle(link) {
   return `${icon}<span>${escapeHtml(link.title)}</span>`;
 }
 
+function renderLinkActions(actions) {
+  return actions
+    .map((action) => {
+      const hasUrl = Boolean(action.url);
+      const href = hasUrl ? escapeHtml(action.url) : '#';
+      const disabledAttributes = hasUrl
+        ? 'target="_blank" rel="noreferrer"'
+        : 'aria-disabled="true" tabindex="-1"';
+      return `
+        <a class="link-card__cta link-card__cta-link${hasUrl ? '' : ' is-disabled'}" href="${href}" ${disabledAttributes}>
+          ${escapeHtml(action.label)} <span aria-hidden="true">↗</span>
+        </a>
+      `;
+    })
+    .join('');
+}
+
 function renderLinkCard(link) {
+  const hasActions = Array.isArray(link.actions) && link.actions.length > 0;
+  if (hasActions) {
+    return `
+      <article class="link-card link-card--multi-action">
+        <span class="link-card__tag">${escapeHtml(link.tag)}</span>
+        <strong class="link-card__title">${renderLinkTitle(link)}</strong>
+        <p class="link-card__description">${escapeHtml(link.description)}</p>
+        <div class="link-card__actions">
+          ${renderLinkActions(link.actions)}
+        </div>
+      </article>
+    `;
+  }
+
   const hasUrl = Boolean(link.url);
   const href = hasUrl ? escapeHtml(link.url) : '#';
   const disabledAttributes = hasUrl
