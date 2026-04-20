@@ -44,28 +44,11 @@ const archivedDepartments = [
     description: '연수, 연구 자료, 평가 링크',
     links: [
       {
-        title: '연수 신청 페이지',
-        description: '교원 연수 신청용 샘플 링크',
-        tag: 'Study',
-        url: 'https://example.com/training',
-      },
-      {
-        title: '평가 계획 문서함',
-        description: '평가 계획 공유용 샘플 링크',
-        tag: 'Share',
-        url: 'https://example.com/evaluation',
-      },
-      {
-        title: '연구자료 아카이브',
-        description: '자료 저장소 샘플 링크',
-        tag: 'Archive',
-        url: 'https://example.com/archive',
-      },
-      {
-        title: '수업 개선 자료',
-        description: '수업 개선 참고용 샘플 링크',
-        tag: 'Guide',
-        url: 'https://example.com/guide',
+        title: '연수 이수증 제출',
+        description: '2026 법정 연수 이수증 제출',
+        icon: 'certificate',
+        tag: 'Training',
+        url: 'https://www.foreducator.com/workmate/training-certs/upload/ca41a6373225a7be3e13c05cd88fde01c2f56bddf5c4cccb184b06313fc0c65d',
       },
     ],
   },
@@ -267,6 +250,7 @@ const visibleDepartmentNames = [
   '교무기획부',
   '과학정보부',
   '창체활동부',
+  '교육연구부',
 ];
 
 const departments = visibleDepartmentNames
@@ -291,6 +275,13 @@ const LINK_TITLE_ICONS = {
     <span class="link-card__title-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
         <path d="M8.25 5.25a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm7.5.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Zm-10.5 7.5A3.75 3.75 0 0 0 1.5 17.25V18a.75.75 0 0 0 .75.75h12A.75.75 0 0 0 15 18v-.75a3.75 3.75 0 0 0-3.75-3.75h-6Zm11.25-.75a3 3 0 0 0-2.9 2.25h.9A4.6 4.6 0 0 1 18.75 18v.75h3a.75.75 0 0 0 .75-.75v-.45a4.05 4.05 0 0 0-4.05-4.05H16.5Z" />
+      </svg>
+    </span>
+  `,
+  certificate: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M6.5 3.75h11A1.75 1.75 0 0 1 19.25 5.5v8.1a1.75 1.75 0 0 1-1.75 1.75h-3.05l-2 2.85a.55.55 0 0 1-.9 0l-2-2.85H6.5A1.75 1.75 0 0 1 4.75 13.6V5.5A1.75 1.75 0 0 1 6.5 3.75Zm1.15 3.1a.75.75 0 1 0 0 1.5h8.7a.75.75 0 1 0 0-1.5h-8.7Zm0 3.15a.75.75 0 1 0 0 1.5h6.1a.75.75 0 1 0 0-1.5h-6.1Z" />
       </svg>
     </span>
   `,

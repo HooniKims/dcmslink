@@ -31,13 +31,14 @@ test('keeps the full department archive in the approved order', () => {
   );
 });
 
-test('renders 교무기획부 first, followed by 과학정보부 and 창체활동부 in the current layout', () => {
+test('renders 교무기획부 first and 교육연구부 last in the current layout', () => {
   assert.deepEqual(
     departments.map((item) => item.name),
     [
       '교무기획부',
       '과학정보부',
       '창체활동부',
+      '교육연구부',
     ],
   );
 });
@@ -82,6 +83,20 @@ test('교무기획부는 요청된 두 카드만 남긴다', () => {
 
   assert.ok(planningDepartment);
   assert.equal(planningDepartment.links.length, 2);
+});
+
+test('교육연구부는 연수 이수증 제출 카드 하나만 남긴다', () => {
+  const trainingDepartment = archivedDepartments.find((item) => item.name === '교육연구부');
+
+  assert.ok(trainingDepartment);
+  assert.equal(trainingDepartment.links.length, 1);
+  assert.deepEqual(trainingDepartment.links[0], {
+    title: '연수 이수증 제출',
+    description: '2026 법정 연수 이수증 제출',
+    icon: 'certificate',
+    tag: 'Training',
+    url: 'https://www.foreducator.com/workmate/training-certs/upload/ca41a6373225a7be3e13c05cd88fde01c2f56bddf5c4cccb184b06313fc0c65d',
+  });
 });
 
 test('과학정보부 두 번째 카드는 스캐너 사이트 카드와 두 개의 스캐너 링크를 사용한다', () => {
