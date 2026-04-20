@@ -31,14 +31,57 @@ test('keeps the full department archive in the approved order', () => {
   );
 });
 
-test('renders only 창체활동부 and 과학정보부 in the current layout', () => {
+test('renders 교무기획부 first, followed by 과학정보부 and 창체활동부 in the current layout', () => {
   assert.deepEqual(
     departments.map((item) => item.name),
     [
+      '교무기획부',
       '과학정보부',
       '창체활동부',
     ],
   );
+});
+
+test('교무기획부 첫 번째 카드는 학부모 감독 신청 카드와 두 개의 링크를 사용한다', () => {
+  const planningDepartment = archivedDepartments.find((item) => item.name === '교무기획부');
+
+  assert.ok(planningDepartment);
+  assert.deepEqual(planningDepartment.links[0], {
+    title: '학부모 감독 신청',
+    description: '학부모 감독 신청 수합과 현황 파악',
+    icon: 'parent',
+    tag: 'Parent',
+    actions: [
+      {
+        label: '감독 신청',
+        url: 'https://script.google.com/macros/s/AKfycbyaNrBwnWRVuKkmR4jCVVMshMFe78VlrDnGQRmWwwSpMXHFHNo_Ce-86Bdb4D-v2uUi/exec',
+      },
+      {
+        label: '신청 확인',
+        url: 'https://docs.google.com/spreadsheets/d/1hfgdidvZ3rxOmbMtUXaPIYR_OcFjiZVKVi8hvMw8Q_c/edit?usp=sharing',
+      },
+    ],
+  });
+});
+
+test('교무기획부 두 번째 카드는 보강 자료 링크 패들렛으로 연결된다', () => {
+  const planningDepartment = archivedDepartments.find((item) => item.name === '교무기획부');
+
+  assert.ok(planningDepartment);
+  assert.deepEqual(planningDepartment.links[1], {
+    title: '보강 자료 링크',
+    description: '대강 자료 링크',
+    icon: 'padlet',
+    tag: 'Padlet',
+    url: 'https://padlet.com/DCMSKR/2025-99cr4o1nr53ts8z4/wish/wKmOZ5vqJo3eWzMA',
+  });
+});
+
+test('교무기획부는 요청된 두 카드만 남긴다', () => {
+  const planningDepartment = archivedDepartments.find((item) => item.name === '교무기획부');
+
+  assert.ok(planningDepartment);
+  assert.equal(planningDepartment.links.length, 2);
 });
 
 test('과학정보부 두 번째 카드는 스캐너 사이트 카드와 두 개의 스캐너 링크를 사용한다', () => {

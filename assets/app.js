@@ -15,28 +15,27 @@ const archivedDepartments = [
     description: '기본 운영, 시간표, 결재, 문서 흐름',
     links: [
       {
-        title: '전자 결재 바로가기',
-        description: '업무 결재 시스템 샘플 링크',
-        tag: 'Sample',
-        url: 'https://example.com/approval',
+        title: '학부모 감독 신청',
+        description: '학부모 감독 신청 수합과 현황 파악',
+        icon: 'parent',
+        tag: 'Parent',
+        actions: [
+          {
+            label: '감독 신청',
+            url: 'https://script.google.com/macros/s/AKfycbyaNrBwnWRVuKkmR4jCVVMshMFe78VlrDnGQRmWwwSpMXHFHNo_Ce-86Bdb4D-v2uUi/exec',
+          },
+          {
+            label: '신청 확인',
+            url: 'https://docs.google.com/spreadsheets/d/1hfgdidvZ3rxOmbMtUXaPIYR_OcFjiZVKVi8hvMw8Q_c/edit?usp=sharing',
+          },
+        ],
       },
       {
-        title: '시간표 편성 관리',
-        description: '수업 배치와 시간표 확인용 샘플 링크',
-        tag: 'Schedule',
-        url: 'https://example.com/schedule',
-      },
-      {
-        title: '출장 / 연가 신청',
-        description: '복무 관련 샘플 링크',
-        tag: 'Office',
-        url: 'https://example.com/leave',
-      },
-      {
-        title: '공문 열람함',
-        description: '학교 문서 확인용 샘플 링크',
-        tag: 'Docs',
-        url: 'https://example.com/docs',
+        title: '보강 자료 링크',
+        description: '대강 자료 링크',
+        icon: 'padlet',
+        tag: 'Padlet',
+        url: 'https://padlet.com/DCMSKR/2025-99cr4o1nr53ts8z4/wish/wKmOZ5vqJo3eWzMA',
       },
     ],
   },
@@ -265,6 +264,7 @@ const archivedDepartments = [
 // Keep the full department dataset archived so hidden departments can be restored
 // later without changing the current layout or card structure.
 const visibleDepartmentNames = [
+  '교무기획부',
   '과학정보부',
   '창체활동부',
 ];
@@ -287,6 +287,13 @@ const LINK_TITLE_ICONS = {
       </svg>
     </span>
   `,
+  parent: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M8.25 5.25a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm7.5.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Zm-10.5 7.5A3.75 3.75 0 0 0 1.5 17.25V18a.75.75 0 0 0 .75.75h12A.75.75 0 0 0 15 18v-.75a3.75 3.75 0 0 0-3.75-3.75h-6Zm11.25-.75a3 3 0 0 0-2.9 2.25h.9A4.6 4.6 0 0 1 18.75 18v.75h3a.75.75 0 0 0 .75-.75v-.45a4.05 4.05 0 0 0-4.05-4.05H16.5Z" />
+      </svg>
+    </span>
+  `,
   printer: `
     <span class="link-card__title-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
@@ -305,6 +312,13 @@ const LINK_TITLE_ICONS = {
     <span class="link-card__title-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
         <path d="M7 4.5h10A2.5 2.5 0 0 1 19.5 7v2.25H21A1.5 1.5 0 0 1 22.5 10.75v4.75A2.5 2.5 0 0 1 20 18h-1.5v1.25A1.75 1.75 0 0 1 16.75 21h-9.5A1.75 1.75 0 0 1 5.5 19.25V18H4A2.5 2.5 0 0 1 1.5 15.5v-4.75A1.5 1.5 0 0 1 3 9.25h1.5V7A2.5 2.5 0 0 1 7 4.5Zm0 2A.5.5 0 0 0 6.5 7v2.25h11V7a.5.5 0 0 0-.5-.5H7Zm-.5 8.25v4h11v-4h-11Zm2.25 1.5h6.5a.75.75 0 1 1 0 1.5h-6.5a.75.75 0 1 1 0-1.5ZM4 11.25a.5.5 0 0 0-.5.5v3.75A.5.5 0 0 0 4 16h.5v-4.75H4Zm16 0h-.5V16h.5a.5.5 0 0 0 .5-.5v-3.75a.5.5 0 0 0-.5-.5Z" />
+      </svg>
+    </span>
+  `,
+  padlet: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M6.5 3.75h11A2.75 2.75 0 0 1 20.25 6.5v11A2.75 2.75 0 0 1 17.5 20.25h-11A2.75 2.75 0 0 1 3.75 17.5v-11A2.75 2.75 0 0 1 6.5 3.75Zm1.1 3.4a.85.85 0 1 0 0 1.7h6.6a.85.85 0 1 0 0-1.7H7.6Zm0 4a.85.85 0 1 0 0 1.7h8.8a.85.85 0 1 0 0-1.7H7.6Zm0 4a.85.85 0 1 0 0 1.7h5.2a.85.85 0 1 0 0-1.7H7.6Z" />
       </svg>
     </span>
   `,
