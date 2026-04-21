@@ -37,6 +37,13 @@ const archivedDepartments = [
         tag: 'Padlet',
         url: 'https://padlet.com/DCMSKR/2025-99cr4o1nr53ts8z4/wish/wKmOZ5vqJo3eWzMA',
       },
+      {
+        title: '연수연명부 제작',
+        description: '연수연명부 관리를 위한 사이트',
+        icon: 'roster',
+        tag: 'Roster',
+        url: 'https://yeonsoosign.vercel.app',
+      },
     ],
   },
   {
@@ -282,6 +289,13 @@ const LINK_TITLE_ICONS = {
     <span class="link-card__title-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
         <path d="M6.5 3.75h11A1.75 1.75 0 0 1 19.25 5.5v8.1a1.75 1.75 0 0 1-1.75 1.75h-3.05l-2 2.85a.55.55 0 0 1-.9 0l-2-2.85H6.5A1.75 1.75 0 0 1 4.75 13.6V5.5A1.75 1.75 0 0 1 6.5 3.75Zm1.15 3.1a.75.75 0 1 0 0 1.5h8.7a.75.75 0 1 0 0-1.5h-8.7Zm0 3.15a.75.75 0 1 0 0 1.5h6.1a.75.75 0 1 0 0-1.5h-6.1Z" />
+      </svg>
+    </span>
+  `,
+  roster: `
+    <span class="link-card__title-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M7.25 3.75h7.2a1 1 0 0 1 .7.3l3.05 3.05a1 1 0 0 1 .3.7V18a2.25 2.25 0 0 1-2.25 2.25h-8.5A2.25 2.25 0 0 1 5.5 18V6a2.25 2.25 0 0 1 2.25-2.25Zm0 2A.25.25 0 0 0 7 6v12c0 .14.11.25.25.25h8.5A.25.25 0 0 0 16 18V9.5h-2.25A1.75 1.75 0 0 1 12 7.75V5.75H7.25Zm6.75 1.42v.58a.25.25 0 0 0 .25.25h.58L14 7.17ZM9.25 11a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-4.5Zm0 3a.75.75 0 0 0 0 1.5h4.5a.75.75 0 0 0 0-1.5h-4.5Z" />
       </svg>
     </span>
   `,

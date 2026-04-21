@@ -78,11 +78,24 @@ test('교무기획부 두 번째 카드는 보강 자료 링크 패들렛으로 
   });
 });
 
-test('교무기획부는 요청된 두 카드만 남긴다', () => {
+test('교무기획부 세 번째 카드는 연수연명부 제작 사이트로 연결된다', () => {
   const planningDepartment = archivedDepartments.find((item) => item.name === '교무기획부');
 
   assert.ok(planningDepartment);
-  assert.equal(planningDepartment.links.length, 2);
+  assert.deepEqual(planningDepartment.links[2], {
+    title: '연수연명부 제작',
+    description: '연수연명부 관리를 위한 사이트',
+    icon: 'roster',
+    tag: 'Roster',
+    url: 'https://yeonsoosign.vercel.app',
+  });
+});
+
+test('교무기획부는 요청된 세 카드만 남긴다', () => {
+  const planningDepartment = archivedDepartments.find((item) => item.name === '교무기획부');
+
+  assert.ok(planningDepartment);
+  assert.equal(planningDepartment.links.length, 3);
 });
 
 test('교육연구부는 연수 이수증 제출 카드 하나만 남긴다', () => {
@@ -189,6 +202,24 @@ test('dibot icon renders as a simple tablet shape for 디벗 관련 문의 cards
   });
 
   assert.match(html, /M7\.5 3\.75h9A2\.25 2\.25/);
+});
+
+test('roster icon renders as a document shape for 연수연명부 제작 cards', () => {
+  const html = renderDepartmentSection({
+    name: '교무기획부',
+    description: '기본 운영 링크',
+    links: [
+      {
+        title: '연수연명부 제작',
+        description: '연수연명부 관리를 위한 사이트',
+        icon: 'roster',
+        tag: 'Roster',
+        url: 'https://yeonsoosign.vercel.app',
+      },
+    ],
+  });
+
+  assert.match(html, /M7\.25 3\.75h7\.2a1 1 0 0 1/);
 });
 
 test('scanner card renders two CTA links for the admin office and principal office scanners', () => {
